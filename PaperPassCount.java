@@ -16,6 +16,8 @@
 
 // 关键点：
 // 1、只看文字，不看标点符号（装入数组时丢掉标点符号）
+//    !问题！这样的是整篇论文的总字数拿来判断，而不是判断句子间的重复，容易出现误判
+//    解决：装入数组时判断标点符号，以一个句号/感叹号/冒号等划分句子，句子后结束装入
 // 2、看字的重复率，不计较顺序（解决办法：把文章一个一个字装入数组）
 
 import java.io.*;
@@ -34,30 +36,49 @@ public class PaperPassCount {
         System.out.println("请输入论文原文路径:");
         originalTextPath = in.nextLine();
 
-        originalArray = TextToArray(originalTextPath);
+        originalArray = TxtArray(originalTextPath);
         System.out.println("请输入需要查重的论文路径:");
         comparePath = in.nextLine();
 
-        compareArray = TextToArray(comparePath);
+        compareArray = TxtArray(comparePath);
         System.out.println("请输入答案储存路径:");
         answerPath = in.nextLine();
     }
 
+    // 判断字符类型
+    private static int JudgeType(int tempchar) {
+        if ((char) tempchar == '。' || (char) tempchar == '!' || (char) tempchar == '？' || (char) tempchar == '\n' || (char) tempchar == ';' || (char) tempchar == '>') {
+            return 1;   // 判定为一个句子
+        }
+        else return 2; // 不是一个句子
+    }
+
     // 论文放入数组
-    private static String[] TextToArray(String paperPath) {
+    private static String[] TxtArray(String paperPath) {
         String[] sentenceArray = new String[2000];
         try {
             Reader reader = null;
             reader = new InputStreamReader(new FileInputStream(new File(paperPath)));
-
+            int tempchar;
             int n = 0;
-            while () {
-
+            String sentence = "";
+            while ((tempchar = reader.read()) != -1) {
+                switch (JudgeType(tempchar)) {
+                    case 1:
+                        if (sentence.equals("")) break;
+                        if (sentence.length() > 5) sentenceArray[n++] = sentence;
+                        sentence = "";
+                        break;
+                    case 2:
+                        sentence = sentence + (char) (tempchar);
+                    default:
+                        break;
+                }
             }
             reader.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return sentenceArray;
     }
-
 }
