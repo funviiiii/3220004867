@@ -18,6 +18,7 @@
 // 1、只看文字，不看标点符号（装入数组时丢掉标点符号）
 // 2、看字的重复率，不计较顺序（解决办法：把文章一个一个字装入数组）
 
+import java.io.*;
 import java.util.Scanner;
 
 public class PaperPassCount {
@@ -42,5 +43,21 @@ public class PaperPassCount {
         answerPath = in.nextLine();
     }
 
+    // 论文放入数组
+    private static String[] TextToArray(String paperPath) {
+        String[] sentenceArray = new String[2000];
+        try {
+            Reader reader = null;
+            reader = new InputStreamReader(new FileInputStream(new File(paperPath)));
+
+            int n = 0;
+            while () {
+
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }
